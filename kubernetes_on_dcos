@@ -1,0 +1,93 @@
+
+================== MKE 서비스 계정 생성 ==================
+
+dcos security org service-accounts keypair mke-priv.pem mke-pub.pem
+dcos security org service-accounts create -p mke-pub.pem -d 'Kubernetes service account' kubernetes
+dcos security secrets create-sa-secret mke-priv.pem kubernetes kubernetes/sa
+
+================== MKE 서비스 계정 권한 부여 ==================
+
+dcos security org users grant kubernetes dcos:mesos:master:reservation:role:kubernetes-role create
+dcos security org users grant kubernetes dcos:mesos:master:reservation:principal:kubernetes delete
+
+================== mesos 마스터 프레임워크 권한 부여 ==================
+
+dcos security org users grant kubernetes dcos:mesos:master:framework:role:kubernetes-role create
+
+================== task 권한 부여 ==================
+
+dcos security org users grant kubernetes dcos:mesos:master:task:user:nobody create
+
+
+
+================== MKE 패키지 설치 ==================
+
+touch mke-options.json
+
+{
+    "service": {
+        "service_account": "kubernetes",
+        "service_account_secret": "kubernetes/sa"
+    }
+}
+
+
+dcos package install --yes kubernetes --options=mke-options.json
+
+
+
+================== k8s cluster 설치 전 권한 설정 ==================
+
+dcos security org service-accounts keypair kube1-priv.pem kube1-pub.pem
+dcos security org service-accounts create -p kube1-pub.pem -d 'Service account for kubernetes-cluster1' kubernetes-cluster1
+dcos security secrets create-sa-secret kube1-priv.pem kubernetes-cluster1 kubernetes-cluster1/sa
+
+
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:framework:role:kubernetes-cluster1-role create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:task:user:root create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:agent:task:user:root create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:reservation:role:kubernetes-cluster1-role create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:reservation:principal:kubernetes-cluster1 delete
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:volume:role:kubernetes-cluster1-role create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:volume:principal:kubernetes-cluster1 delete
+
+
+dcos security org users grant kubernetes-cluster1 dcos:secrets:default:/kubernetes-cluster1/* full
+dcos security org users grant kubernetes-cluster1 dcos:secrets:list:default:/kubernetes-cluster1 read
+
+dcos security org users grant kubernetes-cluster1 dcos:adminrouter:ops:ca:rw full
+dcos security org users grant kubernetes-cluster1 dcos:adminrouter:ops:ca:ro full
+
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:framework:role:slave_public/kubernetes-cluster1-role create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:framework:role:slave_public/kubernetes-cluster1-role read
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:reservation:role:slave_public/kubernetes-cluster1-role create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:volume:role:slave_public/kubernetes-cluster1-role create
+dcos security org users grant kubernetes-cluster1 dcos:mesos:master:framework:role:slave_public read
+dcos security org users grant kubernetes-cluster1 dcos:mesos:agent:framework:role:slave_public read
+
+================== k8s cluster 설치 전 권한 설정 완료 ==================
+
+
+1. 서설 local-universe 로 된 이미지로 설치시 반드시 마스터 서버에 있는 crt파일 노드전체 복사
+sudo mkdir -p /etc/docker/certs.d/master.mesos:5000
+sudo curl -o /etc/docker/certs.d/master.mesos:5000/ca.crt http://master.mesos:8082/certs/domain.crt
+sudo systemctl restart docker
+sudo cp /etc/docker/certs.d/master.mesos:5000/ca.crt /var/lib/dcos/pki/tls/certs/docker-registry-ca.crt
+
+or docker daemon.json
+{
+  "insecure-registries" : ["master.mesos:5000"]
+}
+
+2. local-universe 즉 마스터 서버의 docker ps 확인하여 정상적으로 universe 이미지 다 올라왓는지 확인
+
+
+
+
+
+
+
+
+
+
+
