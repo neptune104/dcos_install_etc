@@ -68,6 +68,8 @@ ExecStartPre=-/sbin/ip link del docker0
 ExecStart=
 ExecStart=/usr/bin/dockerd --graph=/var/lib/docker --storage-driver=overlay
 EOF
+
+systemctl daemon-reload
 systemctl restart docker
 
 
