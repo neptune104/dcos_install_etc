@@ -1,0 +1,26 @@
+{
+  "service": {
+    "name": "dcos-edgelb/api",
+    "cpus": 1,
+    "mem": 1024,
+    "apiserverProtocol": "http",
+    "zkHosts": "zk-1.zk:2181,zk-2.zk:2181,zk-3.zk:2181,zk-4.zk:2181,zk-5.zk:2181",
+    "zkTimeout": "60s",
+    "zkPath": "/edgelb",
+    "forcePull": false,
+    "dcosAddress": "leader.mesos",
+    "dcosProtocol": "https",
+    "metricsPrefix": "dcos",
+    "mesosAddress": "leader.mesos:5050",
+    "mesosProtocol": "https",
+    "secretName": "dcos-edgelb/edge-lb-secret",
+    "principal": "edge-lb-principal",
+    "mesosAuthNZ": true,
+    "logLevel": "info",
+    "rpcVipPort": 8081,
+    "poolDataRPCPort": 6063,
+    "awsAccessKeyId": "",
+    "awsSecretAccessKey": "",
+    "awsRegion": ""
+  }
+}
