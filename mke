@@ -1,4 +1,4 @@
-
+###################### MKE권한
 
 dcos security org service-accounts keypair mke-priv.pem mke-pub.pem
 dcos security org service-accounts create -p mke-pub.pem -d 'Kubernetes service account' kubernetes
@@ -12,6 +12,7 @@ dcos security org users grant kubernetes dcos:mesos:master:framework:role:kubern
 dcos security org users grant kubernetes dcos:mesos:master:task:user:nobody create
 
 ========================================================================================================
+###################### Kubernetes cluster 권한
 
 dcos security org service-accounts keypair kube1-priv.pem kube1-pub.pem
 dcos security org service-accounts create -p kube1-pub.pem -d 'Service account for kubernetes-cluster1' kubernetes-cluster1
@@ -39,6 +40,7 @@ dcos security org users grant kubernetes-cluster1 dcos:mesos:master:framework:ro
 dcos security org users grant kubernetes-cluster1 dcos:mesos:agent:framework:role:slave_public read
 
 ========================================================================================================
+###################### EdgeLB 권한
 
 dcos security org service-accounts keypair edge-lb-private-key.pem edge-lb-public-key.pem
 dcos security org service-accounts create -p edge-lb-public-key.pem -d "Edge-LB service account" edge-lb-principal
