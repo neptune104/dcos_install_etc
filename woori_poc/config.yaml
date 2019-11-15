@@ -1,0 +1,22 @@
+bootstrap_url: http://192.168.0.169:80
+cluster_name: woori-poc
+superuser_username: admin
+#superuser_password_hash: $6$rounds=656000$vevm6ZC15DBr1dtU$pB56BSASqQ89zEPYJJ0dAwFKRmh7cNGLI8ZgKD8AiNBkxgelatuJU3cmBnqyoi1tORlAn0YnIrvwkXLyR7o1j1
+superuser_password_hash: $6$rounds=656000$Po9Fw2kRVD/Qyd4b$eOXUEnGrmXQBjqj2Y3XvUdefgt5WSknxwp0t2.ZumQ60A.0ZQBlzE8Yk48dXpNcOvjzcruenb.gjgvGs1Y3NP/
+exhibitor_storage_backend: static
+master_discovery: static
+ip_detect_public_filename: genconf/ip-detect
+master_list:
+- 192.168.0.170
+resolvers:
+- 168.126.63.1
+- 8.8.8.8
+# Choose your security mode: permissive or strict
+security: permissive
+use_proxy: 'false'
+fault_domain_enabled: false
+#If IPv6 is disabled in your kernel, you must disable it in the config.yaml
+enable_ipv6: 'false'
+dcos_l4lb_enable_ipv6: 'false'
+enable_gpu_isolation: 'true'
+gpus_are_scarce: 'false'
